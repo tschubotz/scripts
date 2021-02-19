@@ -1,1 +1,4 @@
 requests
+svglib
+python-magic
+Pillow

@@ -1,5 +1,9 @@
 import requests
-from pathlib import Path
+import os.path
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPDF, renderPM
+import magic
+from PIL import Image
 
 # This script goes through atoken list and checks if we have this token in the backend and whether it has an icon or not. If not, then the icon is downloaded.
 
@@ -46,16 +50,19 @@ for token_list_url in token_list_urls:
             print(f'Skipped {token_info["name"]} at {address}: Wrong chainId: {token_info["chainId"]}.')
             continue
         
-        
+        # Check if there a logo uri
+        if 'logoURI' not in token_info:
+            print(f'Skipped {token_info["name"]} at {address}: No logo uri.')
+            continue
+
         # Check if the backend has this token
         if address not in known_tokens:
-            print(f'Skipped {token_info["name"]} at {address}: Not know to backend.')
+            print(f'Skipped {token_info["name"]} at {address}: Not known to backend.')
             continue
 
         filename = f'{address}.png'
         # Check if icon has been downloaded already
-        my_file = Path(filename)
-        if my_file.exists:
+        if os.path.isfile(filename): 
             print(f'Skipped {token_info["name"]} at {address}: Icon already downloaded.')
             continue
 
@@ -66,11 +73,39 @@ for token_list_url in token_list_urls:
             continue
 
         # If all checks were (un)successful, then fetch the icon.
-        token_list_icon_req = requests.get(token_info['logoURI'])
+        logo_uri = token_info['logoURI']
+        if logo_uri[:4] == 'ipfs':
+            logo_uri = 'https://cloudflare-ipfs.com/ipfs/' + logo_uri[7:]
+
+        token_list_icon_req = requests.get(logo_uri)
         if token_list_icon_req.status_code != 200:
-            print(f'Skipped {token_info["name"]} at {address}: Could not load icon at {token_info["logoURI"]}')
+            print(f'Skipped {token_info["name"]} at {address}: Could not load icon at {logo_uri}')
+            continue
+
+        # Convert to png if this is an svg        
+        if token_info["logoURI"][-3:] == 'svg':
+            temp_svg = 'temp.svg'
+            open(temp_svg, 'wb').write(token_list_icon_req.content)        
+            drawing = svg2rlg(temp_svg)
+            renderPM.drawToFile(drawing, filename, fmt="PNG")
+
+            print(f'{token_info["name"]} at {address}: Logo successfully downloaded and converted from svg.')
             continue
 
         # Write logo to file with filename of rinkeby token address
         open(filename, 'wb').write(token_list_icon_req.content)
-        print(f'{token_info["name"]} at {address}: Logo successfully downloaded.')
+
+        # check if this is actually an svg
+        filetype = magic.from_file(filename, mime=True)
+        
+        if filetype == 'image/svg+xml':
+            drawing = svg2rlg(filename)
+            renderPM.drawToFile(drawing, filename, fmt="PNG")
+            print(f'{token_info["name"]} at {address}: Logo successfully downloaded and converted from svg.')
+        elif filetype == 'image/png':
+            print(f'{token_info["name"]} at {address}: Logo successfully downloaded.')
+        elif filetype == 'image/jpeg':
+            Image.open(filename).save(filename)
+            print(f'{token_info["name"]} at {address}: Logo successfully downloaded and converted from jpg.')
+        else:
+            import pdb;pdb.set_trace()
