@@ -8,11 +8,11 @@ tx_service_token_url = 'https://safe-transaction.gnosis.io/api/v1/tokens/'
 chain_id = 1
 
 token_list_urls = [
-    # 'https://wispy-bird-88a7.uniswap.workers.dev/?url=http://tokens.1inch.eth.link',
-    # 'https://tokens.coingecko.com/uniswap/all.json',
-    # 'https://uniswap.mycryptoapi.com/',
-    # 'https://wispy-bird-88a7.uniswap.workers.dev/?url=http://tokenlist.zerion.eth.link',
-    # 'https://zapper.fi/api/token-list',
+    'https://wispy-bird-88a7.uniswap.workers.dev/?url=http://tokens.1inch.eth.link',
+    'https://tokens.coingecko.com/uniswap/all.json',
+    'https://uniswap.mycryptoapi.com/',
+    'https://wispy-bird-88a7.uniswap.workers.dev/?url=http://tokenlist.zerion.eth.link',
+    'https://zapper.fi/api/token-list',
     'https://wispy-bird-88a7.uniswap.workers.dev/?url=http://tokenlist.aave.eth.link',
     'https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json',
     'https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json',
