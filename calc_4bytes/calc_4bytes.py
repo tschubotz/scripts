@@ -82,13 +82,18 @@ functions = []
 # functions.append('ResetAllowance(address,address,address)')
 # functions.append('DeleteAllowance(address,address,address)')
 
-functions.append('RelayerInstalled(address)')
-functions.append('RelayerUninstalled(address)')
-functions.append('RelayExecuted(bytes32,bool,address,uint256,uint256)')
-functions.append('OutOfCoins()')
-functions.append('Deposit(address,uint256,uint256)')
-functions.append('Withdraw(address,address,uint256)')
+# functions.append('RelayerInstalled(address)')
+# functions.append('RelayerUninstalled(address)')
+# functions.append('RelayExecuted(bytes32,bool,address,uint256,uint256)')
+# functions.append('OutOfCoins()')
+# functions.append('Deposit(address,uint256,uint256)')
+# functions.append('Withdraw(address,address,uint256)')
 
+# functions.append('issueMaxSynths()')
+# functions.append('issueMaxSynthsOnBehalf(address)')
+# functions.append('issueSynths(uint256)')
+# functions.append('issueSynthsOnBehalf(address, uint256)')
+functions.append('borrowBalanceStoredInternal(address)')
 
 encoded_functions = []
 for func in functions:
